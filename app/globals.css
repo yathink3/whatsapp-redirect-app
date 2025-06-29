@@ -31,16 +31,99 @@
   * {
     @apply border-border;
   }
+
+  html {
+    /* Prevent bounce scrolling on iOS */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent zoom */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
+    /* Prevent bounce scrolling and pull-to-refresh */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent text selection and callouts */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Fix for iOS safe areas */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 }
 
 /* PWA specific styles */
 @media (display-mode: standalone) {
+  html,
   body {
+    /* Disable bounce scrolling in standalone mode */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent user selection */
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+    /* Remove tap highlights */
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent zoom */
+    touch-action: manipulation;
+  }
+
+  /* Prevent pull-to-refresh */
+  body {
+    overflow-x: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+
+  /* Allow scrolling only in specific containers */
+  .scroll-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  body {
+    /* iOS Safari specific fixes */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  /* Prevent iOS bounce scrolling */
+  .no-bounce {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix iOS input zoom */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  /* Prevent horizontal scrolling */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Optimize touch targets */
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

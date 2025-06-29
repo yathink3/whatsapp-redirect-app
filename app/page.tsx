@@ -193,7 +193,7 @@ export default function WhatsAppRedirect() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-to-br from-green-50 to-emerald-100 p-4 scroll-container no-bounce">
       <div className="max-w-md mx-auto pt-8">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4">
