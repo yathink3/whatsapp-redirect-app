@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Copy, ExternalLink } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -213,7 +213,13 @@ export default function WhatsAppRedirect() {
               <Label htmlFor="country">Country</Label>
               <Select value={countryCode} onValueChange={handleCountryChange}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span>{countries.find((c) => c.code === countryCode)?.flag}</span>
+                    <span>{countryCode}</span>
+                    <span className="text-gray-500 hidden sm:inline truncate">
+                      {countries.find((c) => c.code === countryCode)?.name}
+                    </span>
+                  </div>
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map((country, index) => (
@@ -221,7 +227,7 @@ export default function WhatsAppRedirect() {
                       <div className="flex items-center gap-2">
                         <span>{country.flag}</span>
                         <span>{country.code}</span>
-                        <span className="text-sm text-gray-500">{country.name}</span>
+                        <span className="text-sm text-gray-500 hidden sm:inline">{country.name}</span>
                       </div>
                     </SelectItem>
                   ))}
