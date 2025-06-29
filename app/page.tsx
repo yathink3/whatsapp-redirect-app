@@ -17,19 +17,24 @@ const countries = [
   { code: "+33", name: "France", flag: "🇫🇷" },
   { code: "+39", name: "Italy", flag: "🇮🇹" },
   { code: "+34", name: "Spain", flag: "🇪🇸" },
-  { code: "+91", name: "India", flag: "🇮🇳" },
+  { code: "+7", name: "Russia", flag: "🇷🇺" },
   { code: "+86", name: "China", flag: "🇨🇳" },
   { code: "+81", name: "Japan", flag: "🇯🇵" },
   { code: "+82", name: "South Korea", flag: "🇰🇷" },
+  { code: "+91", name: "India", flag: "🇮🇳" },
+  { code: "+65", name: "Singapore", flag: "🇸🇬" },
+  { code: "+61", name: "Australia", flag: "🇦🇺" },
   { code: "+55", name: "Brazil", flag: "🇧🇷" },
   { code: "+52", name: "Mexico", flag: "🇲🇽" },
-  { code: "+61", name: "Australia", flag: "🇦🇺" },
-  { code: "+7", name: "Russia", flag: "🇷🇺" },
+  { code: "+54", name: "Argentina", flag: "🇦🇷" },
+  { code: "+27", name: "South Africa", flag: "🇿🇦" },
+  { code: "+234", name: "Nigeria", flag: "🇳🇬" },
+  { code: "+20", name: "Egypt", flag: "🇪🇬" },
   { code: "+90", name: "Turkey", flag: "🇹🇷" },
   { code: "+966", name: "Saudi Arabia", flag: "🇸🇦" },
   { code: "+971", name: "UAE", flag: "🇦🇪" },
-  { code: "+27", name: "South Africa", flag: "🇿🇦" },
-  { code: "+234", name: "Nigeria", flag: "🇳🇬" },
+  { code: "+60", name: "Malaysia", flag: "🇲🇾" },
+  { code: "+66", name: "Thailand", flag: "🇹🇭" },
 ]
 
 export default function WhatsAppRedirect() {
@@ -51,54 +56,90 @@ export default function WhatsAppRedirect() {
     return () => window.removeEventListener("beforeinstallprompt", handler)
   }, [])
 
+  // Update phone number display when country code changes
+  useEffect(() => {
+    if (phoneNumber && !phoneNumber.startsWith("+")) {
+      // If there's a number without country code, update the display
+      setPhoneNumber(countryCode + phoneNumber.replace(/^\+?\d{1,4}/, ""))
+    }
+  }, [countryCode])
+
   const parsePhoneNumber = (input: string) => {
     // Remove all non-digit characters except +
     const cleaned = input.replace(/[^\d+]/g, "")
 
+    if (!cleaned.startsWith("+")) {
+      return { countryCode, number: cleaned }
+    }
+
+    // Sort countries by code length (longest first) to match longer codes first
+    const sortedCountries = [...countries].sort((a, b) => b.code.length - a.code.length)
+
     // Check if it starts with a country code
-    for (const country of countries) {
+    for (const country of sortedCountries) {
       if (cleaned.startsWith(country.code)) {
         const number = cleaned.substring(country.code.length)
-        setCountryCode(country.code)
-        setPhoneNumber(number)
-        return
+        return { countryCode: country.code, number: country.code + number }
       }
     }
 
-    // If no country code found, just set the number
-    setPhoneNumber(cleaned.replace(/^\+/, ""))
+    // If no match found, return the original input
+    return { countryCode, number: cleaned }
   }
 
   const handlePhoneNumberChange = (value: string) => {
-    // Check if this looks like a full international number
-    if (value.startsWith("+") || (value.length > 10 && /^\d+$/.test(value))) {
-      parsePhoneNumber(value)
+    // If the input starts with + or looks like an international number
+    if (value.startsWith("+") || (value.length > 10 && /^\d+$/.test(value.replace(/[^\d]/g, "")))) {
+      const parsed = parsePhoneNumber(value)
+      if (parsed.countryCode !== countryCode) {
+        setCountryCode(parsed.countryCode)
+      }
+      setPhoneNumber(parsed.number)
     } else {
-      setPhoneNumber(value.replace(/[^\d]/g, ""))
+      // For regular input, just clean and add country code
+      const cleaned = value.replace(/[^\d]/g, "")
+      setPhoneNumber(countryCode + cleaned)
     }
   }
 
+  const handleCountryChange = (newCountryCode: string) => {
+    setCountryCode(newCountryCode)
+    // Update phone number to use new country code
+    const currentNumber = phoneNumber.replace(/^\+?\d{1,4}/, "")
+    setPhoneNumber(newCountryCode + currentNumber)
+  }
+
   const formatPhoneNumber = (number: string) => {
-    const digits = number.replace(/\D/g, "")
-    if (digits.length === 0) return ""
+    if (!number) return ""
+
+    // If number doesn't start with country code, add it
+    if (!number.startsWith(countryCode)) {
+      number = countryCode + number.replace(/^\+?\d{1,4}/, "")
+    }
+
+    const withoutCountryCode = number.substring(countryCode.length)
+    const digits = withoutCountryCode.replace(/\D/g, "")
+
+    if (digits.length === 0) return countryCode + " "
 
     if (countryCode === "+1") {
       // US/Canada format
-      if (digits.length <= 3) return digits
-      if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
-      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`
+      if (digits.length <= 3) return `${countryCode} (${digits}`
+      if (digits.length <= 6) return `${countryCode} (${digits.slice(0, 3)}) ${digits.slice(3)}`
+      return `${countryCode} (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`
     }
 
     // Default formatting for other countries
-    return digits.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
+    if (digits.length <= 3) return `${countryCode} ${digits}`
+    if (digits.length <= 6) return `${countryCode} ${digits.slice(0, 3)} ${digits.slice(3)}`
+    return `${countryCode} ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
   }
 
   const generateWhatsAppLink = () => {
     const cleanNumber = phoneNumber.replace(/\D/g, "")
     if (!cleanNumber) return ""
 
-    const fullNumber = countryCode.replace("+", "") + cleanNumber
-    return `https://wa.me/${fullNumber}`
+    return `https://wa.me/${cleanNumber}`
   }
 
   const handleRedirect = () => {
@@ -170,7 +211,7 @@ export default function WhatsAppRedirect() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="country">Country</Label>
-              <Select value={countryCode} onValueChange={setCountryCode}>
+              <Select value={countryCode} onValueChange={handleCountryChange}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -190,32 +231,34 @@ export default function WhatsAppRedirect() {
 
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <div className="flex gap-2">
-                <div className="flex items-center px-3 py-2 border rounded-md bg-gray-50 text-sm font-medium">
-                  {countryCode}
-                </div>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter phone number"
-                  value={formatPhoneNumber(phoneNumber)}
-                  onChange={(e) => handlePhoneNumberChange(e.target.value)}
-                  className="flex-1"
-                />
-              </div>
-              <p className="text-xs text-gray-500">You can paste a full international number (e.g., +1234567890)</p>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder={`${countryCode} Enter phone number`}
+                value={formatPhoneNumber(phoneNumber)}
+                onChange={(e) => handlePhoneNumberChange(e.target.value)}
+                className="text-base"
+              />
+              <p className="text-xs text-gray-500">
+                Paste a full international number (e.g., +1234567890) to auto-detect country
+              </p>
             </div>
 
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleRedirect}
                 className="flex-1 bg-green-500 hover:bg-green-600"
-                disabled={!phoneNumber}
+                disabled={!phoneNumber || phoneNumber === countryCode}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Open WhatsApp
               </Button>
-              <Button variant="outline" size="icon" onClick={copyLink} disabled={!phoneNumber}>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={copyLink}
+                disabled={!phoneNumber || phoneNumber === countryCode}
+              >
                 <Copy className="w-4 h-4" />
               </Button>
             </div>
