@@ -76,8 +76,8 @@ const SelectContent = React.forwardRef<
       position={position}
       avoidCollisions={true}
       collisionPadding={{
-        top: 60, // Add padding for status bar and safe area
-        bottom: 20,
+        top: 20,
+        bottom: 40, // Increased bottom padding for safe area
         left: 20,
         right: 20,
       }}
