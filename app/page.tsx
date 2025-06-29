@@ -216,7 +216,7 @@ export default function WhatsAppRedirect() {
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <span>{countries.find((c) => c.code === countryCode)?.flag}</span>
                     <span>{countryCode}</span>
-                    <span className="text-gray-500 hidden sm:inline truncate">
+                    <span className="text-gray-500 truncate">
                       {countries.find((c) => c.code === countryCode)?.name}
                     </span>
                   </div>
@@ -227,7 +227,7 @@ export default function WhatsAppRedirect() {
                       <div className="flex items-center gap-2">
                         <span>{country.flag}</span>
                         <span>{country.code}</span>
-                        <span className="text-sm text-gray-500 hidden sm:inline">{country.name}</span>
+                        <span className="text-sm text-gray-500">{country.name}</span>
                       </div>
                     </SelectItem>
                   ))}
