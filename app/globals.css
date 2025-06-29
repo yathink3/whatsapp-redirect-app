@@ -87,6 +87,14 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
+
+  /* Enhanced dropdown positioning for PWA */
+  [data-radix-select-content] {
+    /* Ensure dropdown respects safe areas */
+    margin-top: max(env(safe-area-inset-top), 20px) !important;
+    margin-bottom: max(env(safe-area-inset-bottom), 20px) !important;
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px) !important;
+  }
 }
 
 /* iOS specific fixes */
@@ -110,6 +118,15 @@
     font-size: 16px !important;
     -webkit-appearance: none;
   }
+
+  /* iOS PWA dropdown fixes */
+  @media (display-mode: standalone) {
+    [data-radix-select-content] {
+      /* More aggressive safe area handling for iOS */
+      margin-top: max(env(safe-area-inset-top, 44px), 60px) !important;
+      max-height: calc(100vh - 140px) !important;
+    }
+  }
 }
 
 /* Additional mobile optimizations */
@@ -126,10 +143,10 @@
     min-height: 44px;
     min-width: 44px;
   }
-}
 
-/* Simple dropdown fix - just ensure it's visible */
-[data-radix-select-content] {
-  max-height: 70vh;
-  z-index: 50;
+  /* Mobile dropdown positioning */
+  [data-radix-select-content] {
+    max-height: 60vh !important;
+    margin-top: 20px !important;
+  }
 }
