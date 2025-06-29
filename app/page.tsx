@@ -10,9 +10,12 @@ import { MessageCircle, Copy, ExternalLink } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 const countries = [
+  { code: "+91", name: "India", flag: "🇮🇳" },
   { code: "+1", name: "United States", flag: "🇺🇸" },
+  { code: "+65", name: "Singapore", flag: "🇸🇬" },
   { code: "+1", name: "Canada", flag: "🇨🇦" },
   { code: "+44", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦" },
   { code: "+49", name: "Germany", flag: "🇩🇪" },
   { code: "+33", name: "France", flag: "🇫🇷" },
   { code: "+39", name: "Italy", flag: "🇮🇹" },
@@ -21,8 +24,6 @@ const countries = [
   { code: "+86", name: "China", flag: "🇨🇳" },
   { code: "+81", name: "Japan", flag: "🇯🇵" },
   { code: "+82", name: "South Korea", flag: "🇰🇷" },
-  { code: "+91", name: "India", flag: "🇮🇳" },
-  { code: "+65", name: "Singapore", flag: "🇸🇬" },
   { code: "+61", name: "Australia", flag: "🇦🇺" },
   { code: "+55", name: "Brazil", flag: "🇧🇷" },
   { code: "+52", name: "Mexico", flag: "🇲🇽" },
@@ -31,14 +32,13 @@ const countries = [
   { code: "+234", name: "Nigeria", flag: "🇳🇬" },
   { code: "+20", name: "Egypt", flag: "🇪🇬" },
   { code: "+90", name: "Turkey", flag: "🇹🇷" },
-  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦" },
   { code: "+971", name: "UAE", flag: "🇦🇪" },
   { code: "+60", name: "Malaysia", flag: "🇲🇾" },
   { code: "+66", name: "Thailand", flag: "🇹🇭" },
 ]
 
 export default function WhatsAppRedirect() {
-  const [countryCode, setCountryCode] = useState("+1")
+  const [countryCode, setCountryCode] = useState(countries?.at(0)?.code || "+1")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isInstallable, setIsInstallable] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
@@ -263,12 +263,12 @@ export default function WhatsAppRedirect() {
               </Button>
             </div>
 
-            {generateWhatsAppLink() && (
+            {/*{generateWhatsAppLink() && (
               <div className="p-3 bg-gray-50 rounded-md">
                 <p className="text-xs text-gray-500 mb-1">Generated link:</p>
                 <p className="text-sm font-mono break-all text-gray-700">{generateWhatsAppLink()}</p>
               </div>
-            )}
+            )}*/}
           </CardContent>
         </Card>
 

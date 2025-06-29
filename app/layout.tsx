@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/icon-192.png",
+    icon: "/favicon.png",
     apple: "/icon-192.png",
   },
   viewport: {
@@ -45,6 +45,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="WhatsApp Redirect" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
       </head>
       <body className={inter.className}>
         {children}
