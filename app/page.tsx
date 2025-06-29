@@ -221,7 +221,7 @@ export default function WhatsAppRedirect() {
                     </span>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="max-h-[60vh] overflow-y-auto" side="bottom" align="start" sideOffset={4}>
+                <SelectContent>
                   {countries.map((country, index) => (
                     <SelectItem key={index} value={country.code}>
                       <div className="flex items-center gap-2">

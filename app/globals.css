@@ -87,23 +87,6 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
-
-  /* Fix dropdown positioning */
-  [data-radix-popper-content-wrapper] {
-    z-index: 50 !important;
-  }
-
-  /* Ensure dropdowns stay within safe areas */
-  [data-radix-select-content] {
-    max-height: 60vh !important;
-    margin-top: env(safe-area-inset-top, 0px) !important;
-    margin-bottom: env(safe-area-inset-bottom, 0px) !important;
-  }
-
-  /* Prevent dropdown from going above viewport */
-  [data-radix-popper-content-wrapper][data-side="top"] {
-    transform: translateY(8px) !important;
-  }
 }
 
 /* iOS specific fixes */
@@ -143,15 +126,10 @@
     min-height: 44px;
     min-width: 44px;
   }
+}
 
-  [data-radix-select-content] {
-    max-height: 50vh;
-    overflow-y: auto;
-  }
-
-  /* Ensure dropdown is always visible */
-  [data-radix-popper-content-wrapper] {
-    position: fixed !important;
-    z-index: 9999 !important;
-  }
+/* Simple dropdown fix - just ensure it's visible */
+[data-radix-select-content] {
+  max-height: 70vh;
+  z-index: 50;
 }
